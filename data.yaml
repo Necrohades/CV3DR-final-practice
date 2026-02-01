@@ -1,0 +1,7 @@
+path: archive/cup
+train: .
+val: .
+
+nc: 1
+names:
+  0: cup
