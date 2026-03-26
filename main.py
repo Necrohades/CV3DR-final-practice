@@ -6,6 +6,7 @@ from ultralytics import YOLO
 
 model = YOLO("yolo11n.pt")
 
+# open the RGBD file with pipeline
 pipeline = rs.pipeline()
 config = rs.config()
 config.enable_device_from_file("tonifuentes.bag", repeat_playback=False)
@@ -19,8 +20,6 @@ try:
         frames = pipeline.wait_for_frames()
         color_frame = frames.get_color_frame()
         depth_frame = frames.get_depth_frame()
-        if not color_frame or not depth_frame:
-            continue
 
         color = np.asanyarray(color_frame.get_data())
         depth = np.asanyarray(depth_frame.get_data()) / 1000  # units are in milimeters
@@ -53,11 +52,9 @@ try:
         # im_array_bgr = results[0].plot()  # BGR format
         color = cv2.cvtColor(color, cv2.COLOR_BGR2RGB)  # Convert to RGB
 
-        depth_vis = cv2.normalize(depth, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
-
         cv2.imshow("Pretrained Model", color)
 
-        # if ESC is pressed, terminate the
+        # exit when the escape key is pressed
         if cv2.waitKey(1) == 27:
             break
 finally:
